@@ -1,0 +1,9 @@
+name = "littlefs"
+description = "Ada/SPARK binding for the LittleFS flash embedded filesystem"
+version = "0.1.0"
+
+authors = ["Fabien Chouteau"]
+maintainers = ["Fabien Chouteau <chouteau@adacore.com>"]
+maintainers-logins = ["Fabien-Chouteau"]
+website = "https://github.com/Fabien-Chouteau/littlefs-ada"
+tags = ["embedded", "filesystem", "nostd", "flash"]
