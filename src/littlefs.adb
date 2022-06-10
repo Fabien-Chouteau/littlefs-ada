@@ -175,7 +175,8 @@ package body Littlefs is
                            path : System.Address;
                            c_type : Interfaces.Unsigned_8)
                            return int  -- lfs.h:504
-        with Import => True, Convention => C, External_Name => "lfs_removeattr";
+        with Import => True, Convention => C,
+        External_Name => "lfs_removeattr";
 
       C_Path : constant String (1 .. Path'Length + 1) :=
         Path & ASCII.NUL;
@@ -246,7 +247,8 @@ package body Littlefs is
       function Close (lfs : access LFS_T;
                       file : access LFS_File)
                       return int  -- lfs.h:539
-        with Import => True, Convention => C, External_Name => "lfs_file_close";
+        with Import => True, Convention => C,
+        External_Name => "lfs_file_close";
    begin
       return Close (LFS'Access, File'Access);
    end Close;
@@ -306,7 +308,8 @@ package body Littlefs is
                       buffer : System.Address;
                       size : LFS_Size)
                       return LFS_Signed_Size  -- lfs.h:561
-        with Import => True, Convention => C, External_Name => "lfs_file_write";
+        with Import => True, Convention => C,
+        External_Name => "lfs_file_write";
    begin
       return Write (LFS'Access, File'Access, Buffer, Size);
    end Write;
@@ -522,7 +525,8 @@ package body Littlefs is
       function Rewind (lfs : access LFS_T;
                        dir : access LFS_Dir)
                        return int
-        with Import => True, Convention => C, External_Name => "lfs_dir_rewind";
+        with Import => True, Convention => C,
+        External_Name => "lfs_dir_rewind";
 
    begin
       return Rewind (LFS'Access, Dir'Access);

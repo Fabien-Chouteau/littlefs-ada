@@ -122,10 +122,10 @@ package Littlefs is
       --  attributes will be written to disk every file sync or close. This
       --  write occurs atomically with update to the file's contents. Custom
       --  attributes are uniquely identified by an 8-bit type and limited to
-      --  LFS_ATTR_MAX bytes. When read, if the stored attribute is smaller than
-      --  the buffer, it will be padded with zeros. If the stored attribute is
-      --  larger, then it will be silently truncated. If the attribute is not
-      --  found, it will be created implicitly.
+      --  LFS_ATTR_MAX bytes. When read, if the stored attribute is smaller
+      --  than the buffer, it will be padded with zeros. If the stored
+      --  attribute is larger, then it will be silently truncated. If the
+      --  attribute is not found, it will be created implicitly.
 
       Attr_Count : aliased LFS_Size;
       --  Number of custom attributes in the list
@@ -148,8 +148,8 @@ package Littlefs is
    --  Format a block device with the littlefs
    --
    --  Requires a littlefs object and config struct. This clobbers the littlefs
-   --  object, and does not leave the filesystem mounted. The config struct must
-   --  be zeroed for defaults and backwards compatibility.
+   --  object, and does not leave the filesystem mounted. The config struct
+   --  must be zeroed for defaults and backwards compatibility.
    --
    --  Returns a negative error code on failure.
 
@@ -234,9 +234,9 @@ package Littlefs is
                      return int;
    --  Set custom attributes
    --
-   --  Custom attributes are uniquely identified by an 8-bit type and limited to
-   --  LFS_ATTR_MAX bytes. If an attribute is not found, it will be implicitly
-   --  created.
+   --  Custom attributes are uniquely identified by an 8-bit type and limited
+   --  to LFS_ATTR_MAX bytes. If an attribute is not found, it will be
+   --  implicitly created.
    --
    --  Returns a negative error code on failure.
 
@@ -261,8 +261,8 @@ package Littlefs is
                   return int;
    --  Open a file
    --
-   --  The mode that the file is opened in is determined by the flags, which are
-   --  values from the enum lfs_open_flags that are bitwise-ored together.
+   --  The mode that the file is opened in is determined by the flags, which
+   --  are values from the enum lfs_open_flags that are bitwise-ored together.
    --
    --  Returns a negative error code on failure.
 
@@ -274,11 +274,11 @@ package Littlefs is
                      return int;
    --  Open a file with extra configuration
    --
-   --  The mode that the file is opened in is determined by the flags, which are
-   --  values from the enum lfs_open_flags that are bitwise-ored together. The
-   --  config struct provides additional config options per file as described
-   --  above. The config struct must be allocated while the file is open,
-   --  and the config struct must be zeroed for defaults and backwards
+   --  The mode that the file is opened in is determined by the flags, which
+   --  are values from the enum lfs_open_flags that are bitwise-ored together.
+   --  The config struct provides additional config options per file as
+   --  described above. The config struct must be allocated while the file is
+   --  open, and the config struct must be zeroed for defaults and backwards
    --  compatibility.
    --
    --  Returns a negative error code on failure.
@@ -323,7 +323,8 @@ package Littlefs is
    --  Takes a buffer and size indicating the data to write. The file will not
    --  actually be updated on the storage until either sync or close is called.
    --
-   --  Returns the number of bytes written, or a negative error code on failure.
+   --  Returns the number of bytes written, or a negative error code on
+   --  failure.
 
    function Seek (LFS    : aliased in out LFS_T;
                   File   : aliased in out LFS_File;
@@ -429,8 +430,9 @@ package Littlefs is
                   return LFS_Signed_Offset;
    --  Return the position of the directory
    --
-   --  The returned offset is only meant to be consumed by seek and may not make
-   --  sense, but does indicate the current position in the directory iteration.
+   --  The returned offset is only meant to be consumed by seek and may not
+   --  make sense, but does indicate the current position in the directory
+   --  iteration.
    --
    --  Returns the position of the directory, or a negative error code on
    --  failure.
@@ -559,15 +561,16 @@ package Littlefs is
       --  default lfs_malloc is used to allocate this buffer.
 
       Lookahead_Buffer : System.Address;
-      --  Optional statically allocated lookahead buffer. Must be lookahead_size
-      --  and aligned to a 32-bit boundary. By default lfs_malloc is used to
-      --  allocate this buffer.
+      --  Optional statically allocated lookahead buffer. Must be
+      --  lookahead_size and aligned to a 32-bit boundary. By default
+      --  lfs_malloc is used to allocate this buffer.
 
       Name_Max : aliased LFS_Size;
-      --  Optional upper limit on length of file names in bytes. No downside for
-      --  larger names except the size of the info struct which is controlled by
-      --  the LFS_NAME_MAX define. Defaults to LFS_NAME_MAX when zero. Stored in
-      --  superblock and must be respected by other littlefs drivers.
+      --  Optional upper limit on length of file names in bytes. No downside
+      --  for larger names except the size of the info struct which is
+      --  controlled by the LFS_NAME_MAX define. Defaults to LFS_NAME_MAX when
+      --  zero. Stored in superblock and must be respected by other littlefs
+      --  drivers.
 
       File_Max : aliased LFS_Size;
       --  Optional upper limit on files in bytes. No downside for larger files
@@ -745,15 +748,7 @@ private
    pragma Inline (Truncate);
    pragma Inline (Tell);
    pragma Inline (Rewind);
-   pragma Inline (Size);
    pragma Inline (Mkdir);
-   pragma Inline (Open);
-   pragma Inline (Close);
-   pragma Inline (Read);
-   pragma Inline (Seek);
-   pragma Inline (Tell);
-   pragma Inline (Rewind);
-   pragma Inline (Size);
    pragma Inline (Traverse);
 
 end Littlefs;
