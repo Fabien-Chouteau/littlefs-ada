@@ -1,0 +1,11 @@
+name = "tests"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+executables = ["tests"]
+
+[[depends-on]]
+littlefs = "*"
+
+[[pins]]
+littlefs = { path = "../" }

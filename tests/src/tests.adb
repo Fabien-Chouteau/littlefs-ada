@@ -8,7 +8,7 @@ with Interfaces;   use Interfaces;
 with Interfaces.C; use Interfaces.C;
 with System.Storage_Elements; use System.Storage_Elements;
 
-procedure Main is
+procedure Tests is
 
    FS    : aliased LFS_T;
    Block : constant access constant LFS_Config := RAM_BD.Create (2048 * 200);
@@ -117,4 +117,4 @@ begin
         (Open (FS, FD, "/dir1/doesnt_exists", LFS_O_RDONLY) = LFS_ERR_NOENT);
    end;
    Tree ("/");
-end Main;
+end Tests;
