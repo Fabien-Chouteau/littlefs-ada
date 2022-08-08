@@ -3,6 +3,8 @@ with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Extensions;
 with System;
 
+with Littlefs_Config;
+
 package Littlefs is
 
    VERSION : constant := 16#00020003#;
@@ -15,12 +17,12 @@ package Littlefs is
    --  Major (top-nibble), incremented on backwards incompatible changes
    --  Minor (bottom-nibble), incremented on feature additions
 
-   LFS_NAME_MAX : constant := 255;
+   LFS_NAME_MAX : constant := Littlefs_Config.Max_Name_Size;
    --  Maximum name size in bytes, may be redefined to reduce the size of
    --  the info struct. Limited to <= 1022. Stored in superblock and must
    --  be respected by other littlefs drivers.
 
-   LFS_FILE_MAX : constant := 2147483647;
+   LFS_FILE_MAX : constant := Littlefs_Config.Max_File_Size;
    --  Maximum size of a file in bytes, may be redefined to limit to support
    --  other drivers. Limited on disk to <= 4294967296. However, above
    --  2147483647 the functions lfs_file_seek, lfs_file_size, and lfs_file_tell
