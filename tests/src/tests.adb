@@ -13,6 +13,8 @@ procedure Tests is
    FS    : aliased LFS_T;
    Block : constant access constant LFS_Config := RAM_BD.Create (2048 * 200);
 
+   package U32_IO is new Ada.Text_IO.Modular_IO (Unsigned_32);
+
    procedure Create_File (Path : String);
    procedure Read_File (Path : String);
    procedure Tree (Path : String);
@@ -87,6 +89,29 @@ procedure Tests is
    end Tree;
 
 begin
+
+   declare
+      function LFS_H_Version return Unsigned_32;
+      pragma Import (C, LFS_H_Version, "lfs_h_version");
+      function LFS_H_Disk_Version return Unsigned_32;
+      pragma Import (C, LFS_H_Disk_Version, "lfs_h_disk_version");
+
+      procedure My_Assert (A, B : Unsigned_32; Msg : String) is
+      begin
+         Ada.Text_IO.Put ("Checking version of " & Msg);
+
+         Ada.Text_IO.Put (" (in C:");
+         U32_IO.Put (A, Base => 16);
+         Ada.Text_IO.Put (" ,in Ada:");
+         U32_IO.Put (B, Base => 16);
+         Ada.Text_IO.Put_Line (")");
+         pragma Assert (A = B, Msg & " mismatch");
+      end My_Assert;
+   begin
+      My_Assert (LFS_H_Version, Littlefs.VERSION, "LFS_VERSION");
+      My_Assert (LFS_H_Disk_Version, Littlefs.DISK_VERSION,
+                 "LFS_DISK_VERSION");
+   end;
 
    declare
       function Config_Size return int;
