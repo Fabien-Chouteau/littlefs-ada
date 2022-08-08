@@ -87,6 +87,40 @@ procedure Tests is
    end Tree;
 
 begin
+
+   declare
+      function Config_Size return int;
+      pragma Import (C, Config_Size, "config_size");
+      function Info_Size return int;
+      pragma Import (C, Info_Size, "info_size");
+      function Attr_Size return int;
+      pragma Import (C, Attr_Size, "attr_size");
+      function File_Config_Size return int;
+      pragma Import (C, File_Config_Size, "file_config_size");
+      function Dir_Size return int;
+      pragma Import (C, Dir_Size, "dir_size");
+      function File_Size return int;
+      pragma Import (C, File_Size, "file_size");
+      function LFS_Size return int;
+      pragma Import (C, LFS_Size, "lfs_size");
+
+      procedure My_Assert (A, B : int; Msg : String) is
+      begin
+         Ada.Text_IO.Put_Line ("Checking size of " & Msg & " (size in C:" &
+                                 A'Img & ", Size in Ada:" & B'Img & ")");
+         pragma Assert (A = B, Msg & " size mismatch");
+      end My_Assert;
+   begin
+      My_Assert (Info_Size, Entry_Info'Size / 8, "Entry_Info");
+      My_Assert (Attr_Size, lfs_attr'Size / 8, "lfs_attr");
+      My_Assert (File_Config_Size, lfs_file_config'Size / 8,
+                 "lfs_file_config");
+      My_Assert (Dir_Size, LFS_Dir'Size / 8, "LFS_Dir");
+      My_Assert (File_Size, LFS_File'Size / 8, "LFS_File");
+      My_Assert (Config_Size, LFS_Config'Size / 8, "LFS_Config");
+      My_Assert (LFS_Size, LFS_T'Size / 8, "LFS_T");
+   end;
+
    pragma Assert (Format (FS, Block.all) = 0);
    pragma Assert (Mount (FS, Block.all) = 0);
 
