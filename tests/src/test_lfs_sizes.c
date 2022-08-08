@@ -1,5 +1,17 @@
 #include "lfs.h"
 
+uint32_t
+lfs_h_version (void)
+{
+  return LFS_VERSION;
+}
+
+uint32_t
+lfs_h_disk_version (void)
+{
+  return LFS_DISK_VERSION;
+}
+
 int
 config_size (void)
 {
