@@ -29,7 +29,7 @@ package Littlefs is
    --  will return incorrect values due to using signed integers. Stored in
    --  superblock and must be respected by other littlefs drivers.
 
-   LFS_ATTR_MAX : constant := 1022;
+   LFS_ATTR_MAX : constant := Littlefs_Config.Max_Attr_Size;
    --  Maximum size of custom attributes in bytes, may be redefined, but there
    --  is no real benefit to using a smaller LFS_ATTR_MAX. Limited to <= 1022.
    --  Possible error codes, these are negative to allow valid positive return

@@ -17,3 +17,5 @@ Trace     = { type = "boolean", default = false}
 No_Malloc = { type = "boolean", default = true}
 Max_Name_Size = { type = "integer", first = 1, last = 1022, default = 255 }
 Max_File_Size = { type = "integer", first = 1, last = 2147483647, default = 2147483647 }
+Max_Attr_Size = { type = "integer", first = 1, last = 1022, default = 1022 }
+

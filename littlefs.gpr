@@ -53,7 +53,8 @@ project Littlefs is
       for Default_Switches ("Ada") use Littlefs_Config.Ada_Compiler_Switches;
       for Default_Switches ("C") use C_Switches
         & ("-DLFS_NAME_MAX=" & Littlefs_Config.Max_Name_Size)
-        & ("-DLFS_FILE_MAX=" & Littlefs_Config.Max_File_Size);
+        & ("-DLFS_FILE_MAX=" & Littlefs_Config.Max_File_Size)
+        & ("-DLFS_ATTR_MAX=" & Littlefs_Config.Max_Attr_Size);
    end Compiler;
 
    package Binder is
