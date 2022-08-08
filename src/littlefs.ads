@@ -475,7 +475,7 @@ package Littlefs is
 
    --  Configuration provided during initialization of the littlefs
    type LFS_Config is record
-      Context : System.Address;
+      Context : System.Address := System.Null_Address;
       --  Opaque user provided context that can be used to pass information to
       --  the block device operations
 
@@ -484,7 +484,7 @@ package Littlefs is
                               Off : LFS_Offset;
                               Buffer : System.Address;
                               Size : LFS_Size)
-                              return int;
+                              return int := null;
       --  Read a region in a block. Negative error codes are propogated to the
       --  user.
 
@@ -493,20 +493,21 @@ package Littlefs is
                               Off : LFS_Offset;
                               Buffer : System.Address;
                               Size : LFS_Size)
-                              return int;
+                              return int := null;
       --  Program a region in a block. The block must have previously been
       --  erased. Negative error codes are propogated to the user. May return
       --  LFS_ERR_CORRUPT if the block should be considered bad.
 
       Erase : access function (C : access constant LFS_Config;
                                Block : LFS_Block)
-                               return int;
+                               return int := null;
       --  Erase a block. A block must be erased before being programmed. The
       --  state of an erased block is undefined. Negative error codes are
       --  propogated to the user. May return LFS_ERR_CORRUPT if the block
       --  should be considered bad.
 
-      Sync : access function (C : access constant LFS_Config) return int;
+      Sync : access function (C : access constant LFS_Config) return int :=
+        null;
       --  Sync the state of the underlying block device. Negative error codes
       --  are propogated to the user.
 
@@ -516,24 +517,24 @@ package Littlefs is
       --  Unlock the underlying block device. Negative error codes
       --  are propogated to the user.
 
-      Read_Size : aliased LFS_Size;
+      Read_Size : aliased LFS_Size := 0;
       --  Minimum size of a block read. All read operations will be a multiple
       --  of this value.
 
-      Prog_Size : aliased LFS_Size;
+      Prog_Size : aliased LFS_Size := 0;
       --  Minimum size of a block program. All program operations will be a
       --  multiple of this value.
 
-      Block_Size : aliased LFS_Size;
+      Block_Size : aliased LFS_Size := 0;
       --  Size of an erasable block. This does not impact ram consumption and
       --  may be larger than the physical erase size. However, non-inlined
       --  files take up at minimum one block. Must be a multiple of the read
       --  and program sizes.
 
-      Block_Count : aliased LFS_Size;
+      Block_Count : aliased LFS_Size := 0;
       --  Number of erasable blocks on the device.
 
-      Block_Cycles : aliased Interfaces.Integer_32;
+      Block_Cycles : aliased Interfaces.Integer_32 := 0;
       --  Number of erase cycles before littlefs evicts metadata logs and moves
       --  the metadata to another block. Suggested values are in the range
       --  100-1000, with large values having better performance at the cost
@@ -541,45 +542,45 @@ package Littlefs is
       --
       --  Set to -1 to disable block-level wear-leveling.
 
-      Cache_Size : aliased LFS_Size;
+      Cache_Size : aliased LFS_Size := 0;
       --  Size of block caches. Each cache buffers a portion of a block in RAM.
       --  The littlefs needs a read cache, a program cache, and one additional
       --  cache per file. Larger caches can improve performance by storing more
       --  data and reducing the number of disk accesses. Must be a multiple of
       --  the read and program sizes, and a factor of the block size.
 
-      Lookahead_Size : aliased LFS_Size;
+      Lookahead_Size : aliased LFS_Size := 0;
       --  Size of the lookahead buffer in bytes. A larger lookahead buffer
       --  increases the number of blocks found during an allocation pass. The
       --  lookahead buffer is stored as a compact bitmap, so each byte of RAM
       --  can track 8 blocks. Must be a multiple of 8.
 
-      Read_Buffer : System.Address;
+      Read_Buffer : System.Address := System.Null_Address;
       --  Optional statically allocated read buffer. Must be cache_size. By
       --  default lfs_malloc is used to allocate this buffer.
 
-      Prog_Buffer : System.Address;
+      Prog_Buffer : System.Address := System.Null_Address;
       --  Optional statically allocated program buffer. Must be cache_size. By
       --  default lfs_malloc is used to allocate this buffer.
 
-      Lookahead_Buffer : System.Address;
+      Lookahead_Buffer : System.Address := System.Null_Address;
       --  Optional statically allocated lookahead buffer. Must be
       --  lookahead_size and aligned to a 32-bit boundary. By default
       --  lfs_malloc is used to allocate this buffer.
 
-      Name_Max : aliased LFS_Size;
+      Name_Max : aliased LFS_Size := 0;
       --  Optional upper limit on length of file names in bytes. No downside
       --  for larger names except the size of the info struct which is
       --  controlled by the LFS_NAME_MAX define. Defaults to LFS_NAME_MAX when
       --  zero. Stored in superblock and must be respected by other littlefs
       --  drivers.
 
-      File_Max : aliased LFS_Size;
+      File_Max : aliased LFS_Size := 0;
       --  Optional upper limit on files in bytes. No downside for larger files
       --  but must be <= LFS_FILE_MAX. Defaults to LFS_FILE_MAX when zero.
       --  Stored in superblock and must be respected by other littlefs drivers.
 
-      Attr_Max : aliased LFS_Size;
+      Attr_Max : aliased LFS_Size := 0;
       --  Optional upper limit on custom attributes in bytes. No downside
       --  for larger attributes size but must be <= LFS_ATTR_MAX. Defaults
       --  to LFS_ATTR_MAX when zero.
@@ -590,7 +591,7 @@ package Littlefs is
 private
 
    for File_Kind use (Register => 1,
-                          Directory => 2);
+                      Directory => 2);
 
    type Entry_Info is record
       c_type : aliased Interfaces.Unsigned_8;
