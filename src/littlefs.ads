@@ -61,6 +61,25 @@ package Littlefs is
    LFS_ERR_NOATTR      : constant LFS_Error := -61; -- No data/attr available
    LFS_ERR_NAMETOOLONG : constant LFS_Error := -36; -- File name too long
 
+   function Error_Img (Err : int) return String
+   is (case Err is
+          when LFS_ERR_OK          => "No error",
+          when LFS_ERR_IO          => "Error during device operation",
+          when LFS_ERR_CORRUPT     => "Corrupted",
+          when LFS_ERR_NOENT       => "No directory entry",
+          when LFS_ERR_EXIST       => "Entry already exists",
+          when LFS_ERR_NOTDIR      => "Entry is not a dir",
+          when LFS_ERR_ISDIR       => "Entry is a dir",
+          when LFS_ERR_NOTEMPTY    => "Dir is not empty",
+          when LFS_ERR_BADF        => "Bad file number",
+          when LFS_ERR_FBIG        => "File too large",
+          when LFS_ERR_INVAL       => "Invalid parameter",
+          when LFS_ERR_NOSPC       => "No space left on device",
+          when LFS_ERR_NOMEM       => "No more memory available",
+          when LFS_ERR_NOATTR      => "No data/attr available",
+          when LFS_ERR_NAMETOOLONG => "File name too long",
+          when others              => "Unknown LFS error (" & Err'Img & ")");
+
    subtype LFS_Open_Flags is Interfaces.C.unsigned;
    LFS_O_RDONLY  : constant LFS_Open_Flags := 16#000001#; -- Open a file as read only
    LFS_O_WRONLY  : constant LFS_Open_Flags := 16#000002#; -- Open a file as write only
