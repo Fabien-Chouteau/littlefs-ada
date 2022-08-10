@@ -9,3 +9,6 @@ littlefs = "*"
 
 [[pins]]
 littlefs = { path = "../" }
+
+[configuration.values]
+littlefs.No_Malloc = false
