@@ -47,6 +47,10 @@ package body Littlefs is
         with Import => True, Convention => C, External_Name => "lfs_format";
 
    begin
+      --  Reset LFS struct as it seems like LFS is expecting it to be zeroed
+      --  before the call.
+      LFS := (others => <>);
+
       return Format (LFS'Access, Config'Access);
    end Format;
 
@@ -62,6 +66,10 @@ package body Littlefs is
                       return int
         with Import => True, Convention => C, External_Name => "lfs_mount";
    begin
+      --  Reset LFS struct as it seems like LFS is expecting it to be zeroed
+      --  before the call.
+      LFS := (others => <>);
+
       return Mount (LFS'Access, Config'Access);
    end Mount;
 
@@ -205,6 +213,11 @@ package body Littlefs is
         Path & ASCII.NUL;
 
    begin
+      --  Reset file struct as it seems like LFS is expecting it to be zeroed
+      --  before a call to open. In particular the linked list of files
+      --  (mlist) might get funky.
+      File := (others => <>);
+
       return Open (LFS'Access, File'Access, C_Path'Address, int (Flags));
    end Open;
 
@@ -232,6 +245,12 @@ package body Littlefs is
       C_Path : constant String (1 .. Path'Length + 1) :=
         Path & ASCII.NUL;
    begin
+
+      --  Reset file struct as it seems like LFS is expecting it to be zeroed
+      --  before a call to open. In particular the linked list of files
+      --  (mlist) might get funky.
+      File := (others => <>);
+
       return Opencfg (LFS'Access, File'Access, C_Path'Address, int (Flags),
                       Config'Access);
    end Opencfg;
@@ -442,6 +461,11 @@ package body Littlefs is
       C_Path : constant String (1 .. Path'Length + 1) :=
         Path & ASCII.NUL;
    begin
+      --  Reset dir struct as it seems like LFS is expecting it to be zeroed
+      --  before a call to open.
+
+      Dir := (others => <>);
+
       return Open (LFS'Access, Dir'Access, C_Path'Address);
    end Open;
 
