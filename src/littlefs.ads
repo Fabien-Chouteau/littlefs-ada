@@ -1,6 +1,5 @@
 with Interfaces;
 with Interfaces.C; use Interfaces.C;
-with Interfaces.C.Extensions;
 with System;
 
 with Littlefs_Config;
@@ -117,14 +116,14 @@ package Littlefs is
    --  Custom attribute structure, used to describe custom attributes
    --  committed atomically during file writes.
    type lfs_attr is record
-      Id : aliased Interfaces.Unsigned_8;
+      Id : aliased Interfaces.Unsigned_8 := 0;
       --  8-bit type of attribute, provided by user and used to identify the
       --  attribute
 
-      Buffer : System.Address;
+      Buffer : System.Address := System.Null_Address;
       --  Pointer to buffer containing the attribute
 
-      Size : aliased LFS_Size;
+      Size : aliased LFS_Size := 0;
       --  Size of attribute in bytes, limited to LFS_ATTR_MAX
 
    end record
@@ -132,11 +131,11 @@ package Littlefs is
 
    --  Optional configuration provided during Opencfg
    type lfs_file_config is record
-      Buffer : System.Address;
+      Buffer : System.Address := System.Null_Address;
       --  Optional statically allocated file buffer. Must be cache_size.
       --  By default lfs_malloc is used to allocate this buffer.
 
-      Attrs : access lfs_attr;
+      Attrs : access lfs_attr := null;
       --  Optional list of custom attributes related to the file. If the file
       --  is opened with read access, these attributes will be read from disk
       --  during the open call. If the file is opened with write access, the
@@ -148,7 +147,7 @@ package Littlefs is
       --  attribute is larger, then it will be silently truncated. If the
       --  attribute is not found, it will be created implicitly.
 
-      Attr_Count : aliased LFS_Size;
+      Attr_Count : aliased LFS_Size := 0;
       --  Number of custom attributes in the list
 
    end record
@@ -609,13 +608,16 @@ package Littlefs is
 
 private
 
+   type C_Bool is new Boolean;
+   pragma Convention (C, C_Bool);
+
    for File_Kind use (Register => 1,
                       Directory => 2);
 
    type Entry_Info is record
-      c_type : aliased Interfaces.Unsigned_8;
-      size : aliased LFS_Size;
-      name : aliased String (1 .. LFS_NAME_MAX + 1);
+      c_type : aliased Interfaces.Unsigned_8 := 0;
+      size : aliased LFS_Size := 0;
+      name : aliased String (1 .. LFS_NAME_MAX + 1) := (others => ASCII.NUL);
    end record
    with Convention => C_Pass_By_Copy;
 
@@ -624,66 +626,66 @@ private
    ---------------------------------------
 
    type lfs_cache_t is record
-      block : aliased LFS_Block;
-      off : aliased LFS_Offset;
-      size : aliased LFS_Size;
-      buffer : access Interfaces.Unsigned_8;
+      block : aliased LFS_Block := 0;
+      off : aliased LFS_Offset := 0;
+      size : aliased LFS_Size := 0;
+      buffer : access Interfaces.Unsigned_8 := null;
    end record
    with Convention => C_Pass_By_Copy;
 
    type lfs_mdir_array2006 is array (0 .. 1) of aliased LFS_Block;
    type lfs_mdir_t is record
-      pair : aliased lfs_mdir_array2006;
-      rev : aliased Interfaces.Unsigned_32;
-      off : aliased LFS_Offset;
-      etag : aliased Interfaces.Unsigned_32;
-      count : aliased Interfaces.Unsigned_16;
-      erased : aliased Extensions.bool;
-      split : aliased Extensions.bool;
-      tail : aliased lfs_mdir_array2006;
+      pair : aliased lfs_mdir_array2006 := (others => 0);
+      rev : aliased Interfaces.Unsigned_32 := 0;
+      off : aliased LFS_Offset := 0;
+      etag : aliased Interfaces.Unsigned_32 := 0;
+      count : aliased Interfaces.Unsigned_16 := 0;
+      erased : aliased C_Bool := False;
+      split : aliased C_Bool := False;
+      tail : aliased lfs_mdir_array2006 := (others => 0);
    end record
    with Convention => C_Pass_By_Copy;
 
    --  littlefs directory type
    type lfs_dir_array2006 is array (0 .. 1) of aliased LFS_Block;
    type LFS_Dir is record
-      next : access LFS_Dir;
-      id : aliased Interfaces.Unsigned_16;
-      c_type : aliased Interfaces.Unsigned_8;
-      m : aliased lfs_mdir_t;
-      pos : aliased LFS_Offset;
-      head : aliased lfs_dir_array2006;
+      next : access LFS_Dir := null;
+      id : aliased Interfaces.Unsigned_16 := 0;
+      c_type : aliased Interfaces.Unsigned_8 := 0;
+      m : aliased lfs_mdir_t := (others => <>);
+      pos : aliased LFS_Offset := 0;
+      head : aliased lfs_dir_array2006 := (others => 0);
    end record
    with Convention => C_Pass_By_Copy;
 
    --  littlefs file type
    type lfs_ctz is record
-      head : aliased LFS_Block;
-      size : aliased LFS_Size;
+      head : aliased LFS_Block := 0;
+      size : aliased LFS_Size := 0;
    end record
    with Convention => C_Pass_By_Copy;
    type LFS_File is record
-      next : access LFS_File;
-      id : aliased Interfaces.Unsigned_16;
-      c_type : aliased Interfaces.Unsigned_8;
-      m : aliased lfs_mdir_t;
-      ctz : aliased lfs_ctz;
-      flags : aliased Interfaces.Unsigned_32;
-      pos : aliased LFS_Offset;
-      block : aliased LFS_Block;
-      off : aliased LFS_Offset;
-      cache : aliased lfs_cache_t;
-      cfg : access constant lfs_file_config;
+      next : access LFS_File := null;
+      id : aliased Interfaces.Unsigned_16 := 0;
+      c_type : aliased Interfaces.Unsigned_8 := 0;
+      m : aliased lfs_mdir_t := (others => <>);
+      ctz : aliased lfs_ctz := (others => <>);
+      flags : aliased Interfaces.Unsigned_32 := 0;
+      pos : aliased LFS_Offset := 0;
+      block : aliased LFS_Block := 0;
+      off : aliased LFS_Offset := 0;
+      cache : aliased lfs_cache_t := (others => <>);
+      cfg : access constant lfs_file_config := null;
    end record
    with Convention => C_Pass_By_Copy;
 
    type lfs_superblock is record
-      version : aliased Interfaces.Unsigned_32;
-      block_size : aliased LFS_Size;
-      block_count : aliased LFS_Size;
-      name_max : aliased LFS_Size;
-      file_max : aliased LFS_Size;
-      attr_max : aliased LFS_Size;
+      version : aliased Interfaces.Unsigned_32 := 0;
+      block_size : aliased LFS_Size := 0;
+      block_count : aliased LFS_Size := 0;
+      name_max : aliased LFS_Size := 0;
+      file_max : aliased LFS_Size := 0;
+      attr_max : aliased LFS_Size := 0;
    end record
    with Convention => C_Pass_By_Copy;
 
@@ -691,8 +693,8 @@ private
 
    type lfs_gstate_array2006 is array (0 .. 1) of aliased LFS_Block;
    type lfs_gstate is record
-      tag : aliased Interfaces.Unsigned_32;
-      pair : aliased lfs_gstate_array2006;
+      tag : aliased Interfaces.Unsigned_32 := 0;
+      pair : aliased lfs_gstate_array2006 := (others => 0);
    end record
    with Convention => C_Pass_By_Copy;
 
@@ -701,35 +703,35 @@ private
    --  The littlefs filesystem type
    type lfs_mlist;
    type lfs_mlist is record
-      next : access lfs_mlist;
-      id : aliased Interfaces.Unsigned_16;
-      c_type : aliased Interfaces.Unsigned_8;
-      m : aliased lfs_mdir_t;
+      next : access lfs_mlist := null;
+      id : aliased Interfaces.Unsigned_16 := 0;
+      c_type : aliased Interfaces.Unsigned_8 := 0;
+      m : aliased lfs_mdir_t := (others => <>);
    end record
    with Convention => C_Pass_By_Copy;
    type lfs_free is record
-      off : aliased LFS_Block;
-      size : aliased LFS_Block;
-      i : aliased LFS_Block;
-      ack : aliased LFS_Block;
-      buffer : access Interfaces.Unsigned_32;
+      off : aliased LFS_Block := 0;
+      size : aliased LFS_Block := 0;
+      i : aliased LFS_Block := 0;
+      ack : aliased LFS_Block := 0;
+      buffer : access Interfaces.Unsigned_32 := null;
    end record
    with Convention => C_Pass_By_Copy;
    type lfs_array2006 is array (0 .. 1) of aliased LFS_Block;
    type LFS_T is record
-      rcache : aliased lfs_cache_t;
-      pcache : aliased lfs_cache_t;
-      root : aliased lfs_array2006;
-      mlist : access lfs_mlist;
-      seed : aliased Interfaces.Unsigned_32;
-      gstate : aliased lfs_gstate_t;
-      gdisk : aliased lfs_gstate_t;
-      gdelta : aliased lfs_gstate_t;
-      free : aliased lfs_free;
-      cfg : access constant LFS_Config;
-      name_max : aliased LFS_Size;
-      file_max : aliased LFS_Size;
-      attr_max : aliased LFS_Size;
+      rcache   : aliased lfs_cache_t := (others => <>);
+      pcache   : aliased lfs_cache_t := (others => <>);
+      root     : aliased lfs_array2006 := (others => 0);
+      mlist    : access lfs_mlist := null;
+      seed     : aliased Interfaces.Unsigned_32 := 0;
+      gstate   : aliased lfs_gstate_t := (others => <>);
+      gdisk    : aliased lfs_gstate_t := (others => <>);
+      gdelta   : aliased lfs_gstate_t := (others => <>);
+      free     : aliased lfs_free := (others => <>);
+      cfg      : access constant LFS_Config := null;
+      name_max : aliased LFS_Size := 0;
+      file_max : aliased LFS_Size := 0;
+      attr_max : aliased LFS_Size := 0;
    end record
    with Convention => C_Pass_By_Copy;
 
